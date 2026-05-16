@@ -1,0 +1,97 @@
+{
+	"info": {
+		"_postman_id": "a9a3b6f2-a5e1-45f8-842c-38d58c8e1e77",
+		"name": "Three-Way Match Engine",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Upload Document",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": []
+						},
+						{
+							"key": "documentType",
+							"value": "po",
+							"type": "text",
+							"description": "Can be: po, grn, invoice"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3000/documents/upload",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"documents",
+						"upload"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Document",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/documents/:id",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"documents",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "6638f2a1b1234c001e4abcde"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Match Result",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/match/:poNumber",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"match",
+						":poNumber"
+					],
+					"variable": [
+						{
+							"key": "poNumber",
+							"value": "CI4PO05788"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
