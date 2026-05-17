@@ -2,11 +2,12 @@
 	"info": {
 		"_postman_id": "a9a3b6f2-a5e1-45f8-842c-38d58c8e1e77",
 		"name": "Three-Way Match Engine",
+		"description": "API collection for the Three-Way Match Engine. Supports PO, GRN, and Invoice document upload, retrieval, and matching.\n\nUse 'Upload Document (JSON Bypass)' when Gemini API quota is unavailable.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "Upload Document",
+			"name": "1. Upload Document (via Gemini)",
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -16,80 +17,101 @@
 						{
 							"key": "file",
 							"type": "file",
-							"src": []
+							"src": [],
+							"description": "The PO, GRN, or Invoice file (PDF or image)"
 						},
 						{
 							"key": "documentType",
 							"value": "po",
 							"type": "text",
-							"description": "Can be: po, grn, invoice"
+							"description": "Must be: po, grn, or invoice"
 						}
 					]
 				},
 				"url": {
 					"raw": "http://localhost:3000/documents/upload",
 					"protocol": "http",
-					"host": [
-						"localhost"
-					],
+					"host": ["localhost"],
 					"port": "3000",
-					"path": [
-						"documents",
-						"upload"
-					]
-				}
+					"path": ["documents", "upload"]
+				},
+				"description": "Upload a document file. Gemini parses it into structured JSON and stores it in MongoDB."
 			},
 			"response": []
 		},
 		{
-			"name": "Get Document",
+			"name": "2. Upload Document (JSON Bypass — no Gemini)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"documentType\": \"po\",\n  \"data\": {\n    \"poNumber\": \"CI4PO05788\",\n    \"poDate\": \"2026-03-17\",\n    \"vendorName\": \"M/s AFP\",\n    \"items\": [\n      { \"itemCode\": \"11423\", \"description\": \"PSM Cheesy Spicy Veg Momos 24 Pieces\", \"quantity\": 50 },\n      { \"itemCode\": \"11797\", \"description\": \"Meatigo Hot Wings 250g\", \"quantity\": 75 }\n    ]\n  }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/documents/upload-json",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "3000",
+					"path": ["documents", "upload-json"]
+				},
+				"description": "Bypasses Gemini entirely. POST pre-parsed JSON directly to seed data for testing or demos. Useful when Gemini API quota is exhausted.\n\nChange documentType to 'grn' or 'invoice' and adjust the data body accordingly."
+			},
+			"response": []
+		},
+		{
+			"name": "3. Get Parsed Document",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
 					"raw": "http://localhost:3000/documents/:id",
 					"protocol": "http",
-					"host": [
-						"localhost"
-					],
+					"host": ["localhost"],
 					"port": "3000",
-					"path": [
-						"documents",
-						":id"
-					],
+					"path": ["documents", ":id"],
 					"variable": [
 						{
 							"key": "id",
-							"value": "6638f2a1b1234c001e4abcde"
+							"value": "PASTE_DOCUMENT_ID_HERE",
+							"description": "MongoDB _id returned from the upload response"
 						}
 					]
-				}
+				},
+				"description": "Retrieve a stored parsed document by its MongoDB _id."
 			},
 			"response": []
 		},
 		{
-			"name": "Get Match Result",
+			"name": "4. Get Three-Way Match Result",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
 					"raw": "http://localhost:3000/match/:poNumber",
 					"protocol": "http",
-					"host": [
-						"localhost"
-					],
+					"host": ["localhost"],
 					"port": "3000",
-					"path": [
-						"match",
-						":poNumber"
-					],
+					"path": ["match", ":poNumber"],
 					"variable": [
 						{
 							"key": "poNumber",
-							"value": "CI4PO05788"
+							"value": "CI4PO05788",
+							"description": "The PO number to match across PO, GRN, and Invoice documents"
 						}
 					]
-				}
+				},
+				"description": "Returns the current three-way match status for a given PO number, including linked document summaries, match status, and violation reasons."
 			},
 			"response": []
 		}

@@ -1,3 +1,8 @@
 node_modules/
 .env
 uploads/
+
+# Utility scripts (not part of the submission)
+check_db.js
+list_models.js
+test_mongo.js
